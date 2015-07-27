@@ -7,7 +7,9 @@
 <body>
     <textarea id="gcode" name="" cols="30" rows="10"></textarea>
     <button id="test">Test</button>
+    <button id="toImage">Image</button>
     <canvas id="canvas" width="600" height="400"></canvas>
+    <img id="image" />
 
     <script src="gcodetogeometry.min.js"></script>
     <script src="gcode2dviewer.js"></script>
@@ -15,15 +17,15 @@
     <script type="text/javascript">
         document.getElementById("test").onclick = function() {
             var code = document.getElementById("gcode").value;
-            var result = GCodeToGeometry.parse(code);
-            if(result.isComplete === true) {
-                alert("The GCode is completly parsed.");
-            } else {
-                alert("A problem occured during the parsing:\n" +
-                        result.errorMessage);
-            }
-            console.log(result);
-            GCode2DViewer.preview(result, document.getElementById("canvas"));
+            var colors = { G1 : '#000000', G2G3 : "#000000" };
+            GCode2DViewer.preview(code, colors, document.getElementById("canvas"));
+        };
+        document.getElementById("toImage").onclick = function() {
+            var code = document.getElementById("gcode").value;
+            var colors = { G1 : '#000000', G2G3 : "#000000" };
+            var img = document.getElementById("image");
+            img.src = GCode2DViewer.getImage(code, colors, 300, 300);
+            console.log(img.src);
         };
     </script>
 </body>
