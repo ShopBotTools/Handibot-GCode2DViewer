@@ -21,12 +21,15 @@ GCode2DViewer.preview = function(gcodeStr, colors, canvas) {
     }
 
     function drawStraightLine(ctx, ratio, start, line, height, color) {
+        var startX = Math.round(ratio * (line.start.x - start.x));
+        var startY = Math.round(height - ratio * (line.start.y - start.y));
+        var endX = Math.round(ratio * (line.end.x - start.x));
+        var endY = Math.round(height - ratio * (line.end.y - start.y));
         ctx.beginPath();
-        ctx.moveTo(ratio * (line.start.x - start.x),
-                height - ratio * (line.start.y - start.y));
-        ctx.lineTo(ratio * (line.end.x - start.x),
-                height - ratio * (line.end.y - start.y));
+        ctx.moveTo(startX, startY);
+        ctx.lineTo(endX, endY);
         ctx.strokeStyle =  color;
+        ctx.lineWidth = 2;
         ctx.stroke();
         ctx.closePath();
     }
@@ -45,6 +48,7 @@ GCode2DViewer.preview = function(gcodeStr, colors, canvas) {
                     );
         }
         ctx.strokeStyle =  color;
+        ctx.lineWidth = 2;
         ctx.stroke();
         ctx.closePath();
     }
@@ -60,6 +64,7 @@ GCode2DViewer.preview = function(gcodeStr, colors, canvas) {
     }
 
     var ctx = canvas.getContext("2d");
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
     var start = { x : gcode.size.min.x, y : gcode.size.min.y };
     var i = 0, ratio = calculateRatio(gcode, canvas);
     var cH = parseInt(canvas.height, 10);
