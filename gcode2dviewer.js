@@ -7,11 +7,23 @@
 
 var GCode2DViewer = {};
 
-// colors = { G0, G1, G2G3 }, if one undefined: not display.
-// color in string in hexadecimal (ex: '#ff00ff')
+/**
+ * Previews in a canvas the G-Code.
+ * @param {string} gcodeStr The G-Code.
+ * @param {object} colors The colors defined by { G0, G1, G2G3 }, each field is
+ *      a string of an hexadecimal color (ex: '#ff00ff). If one field is
+ *      undefined, the corresponding G-Code command is not display.
+ * @param {object} canvas The DOM Element canvas.
+ */
 GCode2DViewer.preview = function(gcodeStr, colors, canvas) {
     "use strict";
 
+    /**
+     * Calculates the ratio for the scale.
+     * @param {object} gcode The parsed G-Code.
+     * @param {object} canvas The DOM Element canvas.
+     * @return {number} The scale ratio.
+     */
     function calculateRatio(gcode, canvas) {
         var pW = Math.abs(gcode.size.max.x - gcode.size.min.x);
         var pH = Math.abs(gcode.size.max.y - gcode.size.min.y);
@@ -20,6 +32,15 @@ GCode2DViewer.preview = function(gcodeStr, colors, canvas) {
         return Math.min(cW / pW, cH / pH);
     }
 
+    /**
+     * Draws a straight line.
+     * @param {object} ctx The canvas 2D context.
+     * @param {number} ratio The scale ratio.
+     * @param {object} start The lowest point of the G-Code command.
+     * @param {object} line The line defined by the G-Code command.
+     * @param {number} height The canvas height.
+     * @param {string} color The hexadecimal color in string.
+     */
     function drawStraightLine(ctx, ratio, start, line, height, color) {
         var startX = Math.round(ratio * (line.start.x - start.x));
         var startY = Math.round(height - ratio * (line.start.y - start.y));
@@ -34,6 +55,15 @@ GCode2DViewer.preview = function(gcodeStr, colors, canvas) {
         ctx.closePath();
     }
 
+    /**
+     * Draws a curved line.
+     * @param {object} ctx The canvas 2D context.
+     * @param {number} ratio The scale ratio.
+     * @param {object} start The lowest point of the G-Code command.
+     * @param {object} line The line defined by the G-Code command.
+     * @param {number} height The canvas height.
+     * @param {string} color The hexadecimal color in string.
+     */
     function drawCurvedLine(ctx, ratio, start, line, height, color) {
         var i = 0;
         var b = line.beziers, l = {};
@@ -58,8 +88,8 @@ GCode2DViewer.preview = function(gcodeStr, colors, canvas) {
     }
 
     var gcode = GCodeToGeometry.parse(gcodeStr);
-    if(Math.abs(gcode.size.max.x - gcode.size.min.x) === 0 ||
-        Math.abs(gcode.size.max.y - gcode.size.min.y) === 0) {
+    if((gcode.size.max.x === gcode.size.min.x) &&
+            (gcode.size.max.y === gcode.size.min.y)) {
         return;
     }
 
@@ -81,6 +111,16 @@ GCode2DViewer.preview = function(gcodeStr, colors, canvas) {
     }
 };
 
+/**
+ * Gets an image represnting the G-Code.
+ * @param {string} gcodeStr The G-Code.
+ * @param {object} colors The colors defined by { G0, G1, G2G3 }, each field is
+ *      a string of an hexadecimal color (ex: '#ff00ff). If one field is
+ *      undefined, the corresponding G-Code command is not display.
+ * @param {number} width The width in pixel.
+ * @param {number} height The height in pixel.
+ * @return {string} The data URL of the image.
+ */
 GCode2DViewer.getImage = function(gcodeStr, colors, width, height) {
     var canvas = document.createElement("canvas");
     canvas.width = width;

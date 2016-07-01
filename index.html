@@ -3,18 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <title>2D previewer</title>
+    <style type="text/css">
+        input {
+            max-width: 30px;
+        }
+    </style>
 </head>
 <body>
     <textarea id="gcode" name="" cols="30" rows="10"></textarea>
+    <br />
+    <label for="width">Width:<input id="width" type="text" value="300" /></label>
+    <label for="height">Height:<input id="height" type="text" value="300" /></label>
+    <br />
     <button id="test">Test</button>
     <button id="toImage">Image</button>
+    <br />
     <canvas id="canvas" width="600" height="400"></canvas>
     <img id="image" />
 
-    <!-- <script src="gcodetogeometry.min.js"></script> -->
-    <!-- <script src="gcode2dviewer.js"></script> -->
+    <script src="gcodetogeometry.min.js"></script>
+    <script src="gcode2dviewer.js"></script>
 
-    <script src="gcode2dviewer.min.js"></script>
+    <!-- <script src="gcode2dviewer.min.js"></script> -->
 
     <script type="text/javascript">
         document.getElementById("test").onclick = function() {
@@ -26,7 +36,9 @@
             var code = document.getElementById("gcode").value;
             var colors = { G1 : '#000000', G2G3 : "#000000" };
             var img = document.getElementById("image");
-            img.src = GCode2DViewer.getImage(code, colors, 300, 300);
+            var width = document.getElementById("width").value;
+            var height = document.getElementById("height").value;
+            img.src = GCode2DViewer.getImage(code, colors, width, height);
         };
     </script>
 </body>
