@@ -112,7 +112,7 @@ GCode2DViewer.preview = function(gcodeStr, colors, canvas) {
 };
 
 /**
- * Gets an image represnting the G-Code.
+ * Gets an image representing the G-Code.
  * @param {string} gcodeStr The G-Code.
  * @param {object} colors The colors defined by { G0, G1, G2G3 }, each field is
  *      a string of an hexadecimal color (ex: '#ff00ff). If one field is
